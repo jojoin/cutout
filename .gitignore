@@ -2,6 +2,10 @@
 __pycache__/
 *.py[cod]
 
+.htaccess
+_note/
+.idea/
+
 # C extensions
 *.so
 
