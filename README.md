@@ -15,3 +15,16 @@ Pre-requisites
 --------------
 
  * Python 3.2+
+ * 
+ 
+
+
+Installation
+------------
+
+you can download cutout by [click here](https://github.com/yangjiePro/cutout/archive/master.zip)
+
+
+Documentation
+-------------
+
