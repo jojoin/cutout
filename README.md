@@ -14,16 +14,21 @@ Introduction
 Pre-requisites
 --------------
 
- * Python 3.2+
- * 
+ * Python 3.2+ 
+ * import MySQLdb
  
 
 
 Installation
 ------------
 
-you can download cutout by [click here](https://github.com/yangjiePro/cutout/archive/master.zip)
+you can download **cutout** by [click here](https://github.com/yangjiePro/cutout/archive/master.zip), and use it in your code like this:
 
+```python
+from cutout import db
+from cutout.common import get_html, get_argv_dict
+from cutout.util import sec2time
+```
 
 Documentation
 -------------
