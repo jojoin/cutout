@@ -1,8 +1,13 @@
-#encoding:utf-8
+#!/usr/bin/python
+#-*- coding:utf8 -*-
 import urllib2
 import os.path
 import sys
 import re
+import time
+
+from util import sec2time
+
 
 #default_encoding = sys.getfilesystemencoding()
 #if default_encoding.lower() == 'ascii':
@@ -27,6 +32,167 @@ def get_argv_dict(argv):
 
 
 # the old function
+
+
+#ProgressBar 进度条组件
+#注释为了方便，把所有“进度条”文字改为“bar”
+class ProgressBar:
+
+	def __init__(self
+		, total_piece=0 #总数据量
+		, label='' #显示在bar之前的title
+		, info='' #显示在bar之后的说明
+	):
+		self.displayed = False #是否已经显示bar
+		self.piece_total = total_piece
+		self.label = label
+		self.face() #外观
+		self.start() #数据初始化
+		self.filtrate = {}
+
+	#设置bar的ui外观
+	def face(self
+		, ui_wl='[' #bar左边的包裹符号
+		, ui_wr=']' #bar右边的包裹符号
+		, ui_fn='=' #bar已经完成的部分
+		, ui_lk=' ' #bar未完成的部分
+		, ui_hd='>' #bar已经完成的部分的头部
+		, ui_leg=50 #bar的长度
+	):
+		self.ui_wl = ui_wl
+		self.ui_wr = ui_wr
+		self.ui_fn = ui_fn
+		self.ui_lk = ui_lk
+		self.ui_hd = ui_hd
+		self.ui_leg = ui_leg
+
+	#开始bar（初始化一些数据）
+	def start(self):
+		self.piece_current = 0.0 #当前数据量
+		self.percent_current = 0.0 #当前百分比  0～100
+		self.start_time = int(time.time()) #bar启动时间
+		self.isDone = False
+
+	#进度条数据到达
+	# @type 进度的类型 percent:百分比 piece:部分数据
+	# @mode 如何修改进度 add:累加 set:设置
+	def step(self,step,type="piece",mode="add"):
+		if type=='percent':
+			if mode=='add':
+				self.percent_current += step
+			elif type=='percent':
+				self.percent_current = step
+		elif type=='piece':
+			if mode=='add':
+				self.piece_current += step
+			elif type=='percent':
+				self.piece_current = step
+			#算百分比
+			if self.piece_total > 0:
+				self.percent_current = self.piece_current/self.piece_total*100
+		#更新显示
+		self.update() 
+		#判断是否已经完结
+		if self.percent_current >= 100:
+			self.done() #已经完成
+
+	#更新bar显示
+	def update(self):
+		if self.isDone:
+			return
+		self.displayed = True
+		percent = self.percent_current
+		ui_hd = self.ui_hd
+		if percent >= 100:
+			percent = 100.0
+			ui_hd = self.ui_fn
+		barleg = self.ui_leg - 1
+		num_left = int((percent/100) * barleg)
+		#print(percent)
+		num_right = barleg - num_left
+		barstr = (self.ui_fn*num_left
+			+ ui_hd
+			+ self.ui_lk*num_right
+			)
+		additiveTime = int(time.time()) - self.start_time
+		if additiveTime==0:
+			additiveTime = 1
+		#print(sec2time(additiveTime))
+		barstr = (self.label
+			+ self.ui_wl
+			+ barstr
+			+ self.ui_wr
+			+ ' ' + '%d'%(percent/additiveTime) + '%/s'
+			+ ' ' + '%.2f'%percent + '%'
+			+ ' ' + sec2time(additiveTime,fillzero=True,fillhour=True)
+			)
+		#print(num_left)
+		#print(barstr)
+		sys.stdout.write('\r'+barstr)
+		sys.stdout.flush()
+
+	#数据处理回调
+	def filtrate(self,name,callback):
+		self.filtrate[name] = callback;
+
+	#进度bar完成，关闭
+	def done(self):
+		self.isDone = True
+		if self.displayed:
+			print()
+			self.displayed = False
+
+
+
+
+if __name__ == "__main__":
+	print('###开始单元测试')
+
+	print('###进度条测试')
+	bar = ProgressBar(label='Bar: ',total_piece=99);
+	bar.face(
+		ui_wl='[' #bar左边的包裹符号
+		, ui_wr=']' #bar右边的包裹符号
+		, ui_fn='=' #bar已经完成的部分
+		, ui_lk=' ' #bar未完成的部分
+		, ui_hd='>' #bar已经完成的部分的头部
+	)
+	bar.step(10)
+	time.sleep(0.9)
+	bar.step(7)
+	time.sleep(0.8)
+	bar.step(11)
+	time.sleep(0.7)
+	bar.step(13)
+	time.sleep(0.6)
+	bar.step(9)
+	time.sleep(0.5)
+	bar.step(10)
+	time.sleep(0.4)
+	bar.step(10)
+	time.sleep(0.3)
+	bar.step(10)
+	time.sleep(0.2)
+	bar.step(10)
+	time.sleep(0.1)
+	bar.step(10)
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+'''
+
+
 
 
 def to_native_string(s):
@@ -201,6 +367,9 @@ class DummyProgressBar:
 	def done(self):
 		pass
 
+
+
+
 def escape_file_path(path):
 	path = path.replace('/', '-')
 	path = path.replace('\\', '-')
@@ -306,4 +475,7 @@ def script_main(script_name, download, download_playlist=None):
 			download_playlist(url, create_dir=create_dir, merge=merge)
 		else:
 			download(url, merge=merge)
+
+
+'''
 
