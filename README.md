@@ -33,7 +33,7 @@ from cutout.util import sec2time
 Documentation
 -------------
 
-**mysql** `from cutout import mysql`
+####mysql
 
 ```python
 mysql.set_config(conf)
