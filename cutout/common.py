@@ -1,12 +1,15 @@
 #!/usr/bin/python
 #-*- coding:utf8 -*-
-import urllib2
+
+import urllib
+import urllib.request
+import urllib.parse
 import os.path
 import sys
 import re
 import time
 
-from util import sec2time
+from .util import sec2time
 
 
 #default_encoding = sys.getfilesystemencoding()
@@ -39,16 +42,23 @@ def get_argv_dict(argv):
 class ProgressBar:
 
 	def __init__(self
-		, total_piece=0 #总数据量
+		, piece_total=0 #总数据量
 		, label='' #显示在bar之前的title
 		, info='' #显示在bar之后的说明
 	):
 		self.displayed = False #是否已经显示bar
-		self.piece_total = total_piece
+		self.piece_total = piece_total
 		self.label = label
 		self.face() #外观
 		self.start() #数据初始化
 		self.filtrate = {}
+
+	#设置数据
+	def set(self
+		, piece_total=0 #bar左边的包裹符号
+	):
+		if piece_total>0:
+			self.piece_total = piece_total
 
 	#设置bar的ui外观
 	def face(self
@@ -118,12 +128,15 @@ class ProgressBar:
 		if additiveTime==0:
 			additiveTime = 1
 		#print(sec2time(additiveTime))
+		speed = '%d'%(percent/additiveTime)
+		if len(speed)==1:
+			speed = ' '+speed
 		barstr = (self.label
 			+ self.ui_wl
 			+ barstr
 			+ self.ui_wr
-			+ ' ' + '%d'%(percent/additiveTime) + '%/s'
 			+ ' ' + '%.2f'%percent + '%'
+			+ ' ' + speed + '%/s'
 			+ ' ' + sec2time(additiveTime,fillzero=True,fillhour=True)
 			)
 		#print(num_left)
@@ -143,11 +156,173 @@ class ProgressBar:
 			self.displayed = False
 
 
+#获取url文件的大小
+def url_size(url):
+	if isinstance(url, str):
+		headers = urllib.request.urlopen(url).headers
+	else:
+		headers = url
+	if 'Content-Length' in headers:
+		return int(headers['Content-Length'])
+	else:
+		return False
+
+
+def undeflate(s):
+	import zlib
+	return zlib.decompress(s, -zlib.MAX_WBITS)
+
+
+def ungzip(s):
+	from StringIO import StringIO
+	import gzip
+	buffer = StringIO(s)
+	f = gzip.GzipFile(fileobj=buffer)
+	return f.read()
+
+def get_response(url):
+	headers = {}
+	headers['User-Agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'
+	req = urllib.request.Request(
+		url = url,
+		headers = headers
+	)
+	response = urllib.request.urlopen(req)
+	data = response.read()
+	if response.info().get('Content-Encoding') == 'gzip':
+		data = ungzip(data)
+	elif response.info().get('Content-Encoding') == 'deflate':
+		data = undeflate(data)
+	response.data = data
+	return response
+
+def get_html(url, encoding=None):
+	content = get_response(url).data
+	if encoding:
+		content = content.decode(encoding,'ignore')
+	return content
+
+
+#url编码
+def urlencode(stuff) :
+	if isinstance(stuff, dict):
+		return urllib.parse.urlencode(stuff)
+	elif isinstance(stuff, str):
+		return urllib.parse.quote(stuff)
+
+
+#url解码
+def urldecode(str) :
+	return urllib.parse.unquote(str)
+
+
+
+
+
+
+
+
+
+
+
+'''
+
+def url_save(url, filepath, bar, refer=None):
+	headers = {}
+	if refer:
+		headers['Referer'] = refer
+	request = urllib2.Request(url, headers=headers)
+	response = urllib2.urlopen(request)
+	file_size = int(response.headers['content-length'])
+	assert file_size
+	if os.path.exists(filepath):
+		if file_size == os.path.getsize(filepath):
+			if bar:
+				bar.done()
+			print 'Skip %s: file already exists' % os.path.basename(filepath)
+			return
+		else:
+			if bar:
+				bar.done()
+			print 'Overwriting', os.path.basename(filepath), '...'
+	with open(filepath, 'wb') as output:
+		received = 0
+		while True:
+			buffer = response.read(1024*256)
+			if not buffer:
+				break
+			received += len(buffer)
+			output.write(buffer)
+			if bar:
+				bar.update_received(len(buffer))
+	assert received == file_size == os.path.getsize(filepath), '%s == %s == %s' % (received, file_size, os.path.getsize(filepath))
+
+'''
+
+
+#url文件下载
+# @arrive 数据到达回调
+def url_save(url, filepath, headers={} ,arrive=None):
+	req = urllib.request.Request(
+		url = url,
+		headers = headers
+	)
+	response = urllib.request.urlopen(req)
+	#print(response.headers)
+	file_size = url_size(response.headers)
+	#print(file_size)
+	#assert file_size
+	#调节每次下载读取的buffer大小
+	readS = int(file_size/1024/32)
+	if readS < 32: readS = 32
+	if readS > 1024*4: readS = 1024*4
+	#print(readS)
+	with open(filepath, 'wb') as output:
+		while True:
+			buffer = response.read(1024*readS)
+			if not buffer:
+				break
+			size = len(buffer)
+			output.write(buffer)
+			if arrive:
+				arrive(size,file_size)
+
+
+
+#从url下载文件
+# @pretend 是否伪装成浏览器
+# @referer 来源链接 用于破解防外链
+# @bar 是否产生显示下载进度条
+def url_download(url, filepath, showBar=False, headers={}, pretend=True, referer=None):
+	if referer:
+		headers['Referer'] = referer
+	if pretend:
+		headers['User-Agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'
+	#输出下载进度条
+	arrive = None
+	if showBar==True:
+		bar = ProgressBar(piece_total=1);
+	if showBar and not showBar==True:
+		bar = showBar
+	if bar:
+		def arrive(size,file_size):
+			if not bar.displayed:
+				bar.set(piece_total=file_size)
+			bar.step(size)
+	url_save(url, filepath, headers=headers,arrive=arrive)
+
 
 
 if __name__ == "__main__":
 	print('###开始单元测试')
 
+	print('###文件下载测试')
+	bar = ProgressBar(piece_total=1);
+	bar.face(ui_leg=30)
+	url_download('http://dlsw.baidu.com/sw-search-sp/soft/3a/12350/QQ6.0.1404885253.exe'
+		,'qq.exe',showBar=bar)
+
+	'''
 	print('###进度条测试')
 	bar = ProgressBar(label='Bar: ',total_piece=99);
 	bar.face(
@@ -176,7 +351,7 @@ if __name__ == "__main__":
 	bar.step(10)
 	time.sleep(0.1)
 	bar.step(10)
-
+	'''
 
 
 
