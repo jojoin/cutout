@@ -12,7 +12,7 @@ import urllib.parse
 import time
 import re
 
-from .util import sec2time
+from .util import sec2time, rangable
 from .common import ProgressBar
 
 
@@ -26,13 +26,15 @@ def cutout(
 		match=False, #正则匹配
 		rid=False, # “不包含/排除”的字符
 		split=None, #分割为数组
-		encoding=None, #编码
+		encoding='utf-8', #编码
 		dealwith=None #对“剪”的结果进行再次处理，可递归进行
 	):
 	if url:
 		data = get_html(url,encoding)
 	if not data:
 		return None
+	if start==0 and end==0:
+		return data
 	#正则匹配 match
 	if match:
 		m = re.search(match, data)
@@ -54,17 +56,17 @@ def cutout(
 	#字符串搜索
 	if end==0:
 		end = len(data)
-	try: #搜索的字符串是否存在
-		if isinstance(end,str):
-			len_end = len(end)
-			end = data.index(end)
-			if not pure: end += len_end;
-		if isinstance(start,str):
-			len_start = len(start)
-			start = data.index(start)
-			if pure: start += len_start;
-	except:
-		return None
+	#try:
+	if isinstance(start,str):
+		len_start = len(start)
+		start = data.index(start)
+		if pure: start += len_start;
+	if isinstance(end,str):
+		len_end = len(end)
+		end = data.index(end)
+		if not pure: end += len_end;
+	#except:
+	#	return None
 	#剪切出数据
 	cutstr = data[start:end]
 	if split:
@@ -146,7 +148,7 @@ def get_html(url, encoding=None):
 
 ## url文件下载
 # @arrive 数据到达回调
-def url_save(url, filepath, headers={} ,arrive=None):
+def url_save(url, file=None, path=None, headers={} ,arrive=None):
 	req = urllib.request.Request(
 		url = url,
 		headers = headers
@@ -157,10 +159,16 @@ def url_save(url, filepath, headers={} ,arrive=None):
 	#print(file_size)
 	#assert file_size
 	#调节每次下载读取的buffer大小
-	readS = int(file_size/1024/32)
-	if readS < 32: readS = 32
-	if readS > 1024*4: readS = 1024*4
+	readS = int(file_size/1024)
+	readS = rangable(readS,64,1024)
 	#print(readS)
+	#处理参数
+
+	if file==None:
+		file = os.path.split(url)[1]
+	if path==None:
+		path=''
+	filepath = os.path.join(path,file)
 	with open(filepath, 'wb') as output:
 		while True:
 			buffer = response.read(1024*readS)
@@ -177,13 +185,14 @@ def url_save(url, filepath, headers={} ,arrive=None):
 # @pretend 是否伪装成浏览器
 # @referer 来源链接 用于破解防外链
 # @bar 是否产生显示下载进度条
-def url_download(url, filepath, showBar=False, headers={}, pretend=True, referer=None):
+def url_download(url, file=None, path=None, showBar=False, headers={}, pretend=True, referer=None):
 	if referer:
 		headers['Referer'] = referer
 	if pretend:
 		headers['User-Agent'] = 'Mozilla/5.0 (Windows; U; Windows NT 6.1; en-US; rv:1.9.1.6) Gecko/20091201 Firefox/3.5.6'
 	#输出下载进度条
 	arrive = None
+	bar = None
 	if showBar==True:
 		bar = ProgressBar(piece_total=1);
 	if showBar and not showBar==True:
@@ -193,7 +202,7 @@ def url_download(url, filepath, showBar=False, headers={}, pretend=True, referer
 			if not bar.displayed:
 				bar.set(piece_total=file_size)
 			bar.step(size)
-	url_save(url, filepath, headers=headers,arrive=arrive)
+	url_save(url, file, path, headers=headers,arrive=arrive)
 
 
 

@@ -31,6 +31,7 @@ class ProgressBar:
 	):
 		self.displayed = False #是否已经显示bar
 		self.piece_total = piece_total
+		self.piece_current = 0
 		self.label = label
 		self.face() #外观
 		self.start() #数据初始化
@@ -51,6 +52,14 @@ class ProgressBar:
 		, ui_lk=' ' #bar未完成的部分
 		, ui_hd='>' #bar已经完成的部分的头部
 		, ui_leg=50 #bar的长度
+		, ui_split='  ' #显示项目之间的分割字符
+		, it_time=True  #是否显示进度时间
+		, it_piece=True  #是否显示进度数量
+		, it_percent=True  #是否显示当前百分比
+		, it_speed=True   #是否显示速度
+		, it_perspeed=True  #是否显示百分比速度
+		, sh_piece_division = 1 #piece显示的时候除法
+		, sh_piece_unit = ''   #piece显示的单位
 	):
 		self.ui_wl = ui_wl
 		self.ui_wr = ui_wr
@@ -58,11 +67,19 @@ class ProgressBar:
 		self.ui_lk = ui_lk
 		self.ui_hd = ui_hd
 		self.ui_leg = ui_leg
+		self.ui_split = ui_split
+		self.it_time = it_time
+		self.it_piece = it_piece
+		self.it_percent = it_percent
+		self.it_speed = it_speed
+		self.it_perspeed = it_perspeed
+		self.sh_piece_division = sh_piece_division
+		self.sh_piece_unit = sh_piece_unit
 
 	#开始bar（初始化一些数据）
 	def start(self):
-		self.piece_current = 0.0 #当前数据量
-		self.percent_current = 0.0 #当前百分比  0～100
+		self.piece_current = 0 #当前数据量
+		self.percent_current = 0 #当前百分比  0～100
 		self.start_time = int(time.time()) #bar启动时间
 		self.isDone = False
 
@@ -97,7 +114,7 @@ class ProgressBar:
 		percent = self.percent_current
 		ui_hd = self.ui_hd
 		if percent >= 100:
-			percent = 100.0
+			percent = 100
 			ui_hd = self.ui_fn
 		barleg = self.ui_leg - 1
 		num_left = int((percent/100) * barleg)
@@ -111,17 +128,29 @@ class ProgressBar:
 		if additiveTime==0:
 			additiveTime = 1
 		#print(sec2time(additiveTime))
-		speed = '%d'%(percent/additiveTime)
-		if len(speed)==1:
-			speed = ' '+speed
 		barstr = (self.label
 			+ self.ui_wl
 			+ barstr
 			+ self.ui_wr
-			+ ' ' + '%.2f'%percent + '%'
-			+ ' ' + speed + '%/s'
-			+ ' ' + sec2time(additiveTime,fillzero=True,fillhour=True)
 			)
+		#piece格式化字符串
+		p_n_f = '%d'
+		ui_sp = self.ui_split
+		if self.sh_piece_division>1:
+			p_n_f = '%.2f'
+		if self.it_percent:
+			barstr += ui_sp+'%.2f'%percent + '%'
+		if self.it_perspeed:
+			perspeed = '%.2f'%(percent/additiveTime)
+			barstr += ui_sp+perspeed + '%/s'
+		if self.it_speed:
+			speed = p_n_f%((self.piece_current/self.sh_piece_division)/additiveTime)
+			barstr += ui_sp+speed + self.sh_piece_unit + '/s'
+		if self.it_piece:
+			barstr += (ui_sp+p_n_f%(self.piece_current/self.sh_piece_division)+self.sh_piece_unit
+				+'/'+p_n_f%(self.piece_total/self.sh_piece_division)+self.sh_piece_unit)
+		if self.it_time:
+			barstr += ui_sp+sec2time(additiveTime,fillzero=True,fillhour=True)
 		#print(num_left)
 		#print(barstr)
 		sys.stdout.write('\r'+barstr)

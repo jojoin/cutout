@@ -7,6 +7,18 @@ import sys,re
 import urllib.parse as urlparse
 
 
+
+## 限定数值范围
+def rangable(num,low=None,top=None):
+	if low and num<low:
+		return low
+	elif top and num>top:
+		return top
+	else:
+		return num
+
+
+
 ## 解析命令行参数 （去掉key里的-符号）
 def parse_argv(argv):
 	argv = argv[1:] # 去除文件名
@@ -27,17 +39,20 @@ def parse_argv(argv):
 
 ## 将计时器"时:分:秒"字符串转换为秒数间隔
 def time2sec(sTime):
+	leg = len(sTime)
+	if leg<=5: #小时位补齐
+		sTime = '0:'+sTime
 	p="^([0-9]+):([0-5][0-9]):([0-5][0-9])$"
 	cp=re.compile(p)
 	try:
 		mTime=cp.match(sTime)
 	except TypeError:
-		return "[InModuleError]:time2itv(sTime) invalid argument type"
+		return "[InModuleError]:time2sec(sTime) invalid argument type"
 	if mTime:
 		t = list(map(int,mTime.group(1,2,3)))
 		return 3600*t[0]+60*t[1]+t[2]
 	else:
-		return "[InModuleError]:time2itv(sTime) invalid argument value"
+		return "[InModuleError]:time2sec(sTime) invalid argument value"
 
 
 ## 将秒数间隔转换为计时器"时:分:秒"字符串
@@ -59,7 +74,7 @@ def sec2time(iItv,fillzero=True,fillhour=False):
 		if not fillzero: fill_zero = str
 		return ":".join(map(fill_zero,time))
 	else:
-		return "[InModuleError]:itv2time(iItv) invalid argument type"
+		return "[InModuleError]:sec2time(iItv) invalid argument type"
 
 
 ## url编码
