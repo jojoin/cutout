@@ -5,15 +5,6 @@
 import os, time
 
 
-print(os.path.split('http://www.baidu.com/img/bdlogo.gif'))
-
-path="/root/log"
-file="bdlogo.gif"
-print()
-
-
-
-
 
 import cutout.util as util
 
