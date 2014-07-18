@@ -33,6 +33,7 @@ from cutout.util import sec2time
 Documentation
 -------------
 
+read or run the [test.py](blob/master/test.py) to get some example. 
 
 Author
 ------
