@@ -33,7 +33,11 @@ from cutout.util import sec2time
 Documentation
 -------------
 
-read or run the [test.py](blob/master/test.py) to get some example. 
+read or run the [test.py](https://github.com/yangjiePro/cutout/blob/master/test.py) to get some example. 
+
+```bash
+$ python3 cutout/test.py
+```
 
 Author
 ------
