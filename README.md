@@ -34,3 +34,14 @@ Documentation
 -------------
 
 
+Author
+------
+
+cutout is developed and maintained by Yang Jie (yangjie@jojoin.com).
+It can be found here: http://github.com/yangjiePro/cutout
+
+contact way:
+
+* Home : http://jojoin.com/user/1
+* Email: yangjie@jojoin.com
+* QQ   : 446342398
