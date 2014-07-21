@@ -33,7 +33,10 @@ def cutout(
 		data = get_html(url,encoding)
 	if not data:
 		return None
-	if start==0 and end==0:
+	if start==0 
+		and end==0 
+		and not match
+		and not split:
 		return data
 	#正则匹配 match
 	if match:
@@ -185,7 +188,7 @@ def url_save(url, file=None, path=None, headers={} ,arrive=None):
 # @pretend 是否伪装成浏览器
 # @referer 来源链接 用于破解防外链
 # @bar 是否产生显示下载进度条
-def url_download(url, file=None, path=None, showBar=False, headers={}, pretend=True, referer=None):
+def download(url, file=None, path=None, showBar=False, headers={}, pretend=True, referer=None):
 	if referer:
 		headers['Referer'] = referer
 	if pretend:
