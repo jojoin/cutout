@@ -13,6 +13,23 @@
 import os, time
 
 
+from cutout.cache import FileCache
+from cutout.cache import MemCache
+
+
+
+
+
+print('\n\n######## cache缓存测试')
+
+print("\n## FileCache 文件缓存测试\n")
+key = '缓存键 hash key'
+c = FileCache('./cache') #指定缓存目录
+c.set(key, ['2w3w','agafd'],10)
+g = c.get(key)
+print(g[1])
+
+
 
 import cutout.util as util
 
