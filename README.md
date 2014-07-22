@@ -8,7 +8,7 @@ A toolbox for data grabbing and processing in python 3
 Introduction
 ------------
 
-**cutout** is a Python toolbox for data grabbing and processing.  This software is still under development, improvement and perfection.
+**cutout** is a Python toolbox for data grabbing and processing. This software is still under development, improvement and perfection.
 
 
 Pre-requisites
@@ -25,15 +25,30 @@ Installation
 you can download **cutout** by [click here](https://github.com/yangjiePro/cutout/archive/master.zip), and use it in your code like this:
 
 ```python
-from cutout import mysql
+from cutout import download, cutout
 from cutout.common import get_html, get_argv_dict
 from cutout.util import sec2time
+...
 ```
 
 Documentation
 -------------
 
-read or run the [test.py](https://github.com/yangjiePro/cutout/blob/master/test.py) to get some example. 
+read or run the [test.py](https://github.com/yangjiePro/cutout/blob/master/test.py) to get more example. 
+
+to get baidu music pc software download url, like this:
+
+    >>> from cutout import cutout
+    >>> para = {}
+    >>> para.url = 'http://music.baidu.com/'
+    >>> para.start = '<a class="downloadlink-pc"'
+    >>> para.end = '>下载PC版</a>'
+    >>> para.dealwith = { 'start':'href="', 'rid':'"', 'end':'"' } #
+    >>> cutout(**para)
+    'http://qianqian.baidu.com/download/BaiduMusic-12345630.exe'
+
+
+read or run the [test.py](https://github.com/yangjiePro/cutout/blob/master/test.py) to get more example. 
 
 ```bash
 $ python3 cutout/test.py
