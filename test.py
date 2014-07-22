@@ -2,25 +2,62 @@
 # -*- coding: UTF-8 -*-
 
 
-# cutout 汇总测试脚本
-# 你可以在这里找到工具箱使用的示例
-# 或者执行本文件查看效果
-# 请留意 print() ， 它给出了详细的提示(注释)
-
-
-
-
 import os, time
 
 
-from cutout.cache import FileCache
-from cutout.cache import MemCache
+
+from cutout import cutout, cutouts
+
+print('\n\n######## 多线程数据抓取\n')
+
+urls = []
+for i in range(18):
+	'''
+	urls.append('http://www.tvmao.com/query.jsp?keys=%E6%B9%96%E5%8C%97%E4%BD%93%E8%82%B2')
+	urls.append('http://jojoin.com/')
+	urls.append('http://codekart.jojoin.com/')
+	urls.append('http://docs.codekart.jojoin.com/')
+	urls.append('http://v.duole.com/')
+	urls.append('http://www.taobao.com/')
+	urls.append('http://www.baidu.com/')
+	urls.append('http://blog.csdn.net/vah101/article/details/6175406')
+	urls.append('http://www.cnblogs.com/wxw0813/archive/2012/09/18/2690694.html')
+	urls.append('http://woodpecker.org.cn/diveintopython3/')
+	urls.append('http://www.pythonclub.org/python-basic/threading')
+	urls.append('http://developer.51cto.com/art/201003/185569.htm')
+	'''
+	urls.append('http://v.baidu.com/tv/21331.htm')
+	#urls.append('')
+
+
+
+sti = time.time()
+bdata = cutouts(urls=urls)
+eti = time.time()
+#print(bdata)
+print('并发抓取%d个页面：'%len(urls)+'%.2f'%(eti-sti)+'秒\n')
+
+	
+
+
+bdata = []
+sti = time.time()
+for u in urls:
+	bdata.append(cutout(u))
+eti = time.time()
+#print(bdata)
+print('顺序抓取%d个页面：'%len(urls)+'%.2f'%(eti-sti)+'秒\n')
+
 
 
 
 
 
 print('\n\n######## cache缓存测试')
+
+#from .cache import SimpleCache
+from cutout.cache import FileCache
+
 
 print("\n## FileCache 文件缓存测试\n")
 key = '缓存键 hash key'
@@ -30,15 +67,13 @@ g = c.get(key)
 print(g[1])
 
 
-
 import cutout.util as util
-
 
 
 
 print('\n\n######## util工具类测试')
 
-print('\n##  rangable 限定数值范围\n')
+print('\n## rangable 限定数值范围\n')
 print('128  (50-100) => '+str(util.rangable(128,50,100)))
 print('32.5 (50.4-100) => '+str(util.rangable(32.5,50.4,100)))
 print('32   (50.4-无上限) => '+str(util.rangable(32.5,50.4)))
@@ -69,7 +104,7 @@ print("{'name':'汉字','title':'标题'} => "
 
 
 
-from cutout import cutout, url_download
+from cutout import cutout, download
 from cutout.common import ProgressBar
 
 
@@ -98,7 +133,7 @@ bar.face(
 	sh_piece_division=1024, #piece 除法
 	sh_piece_unit='KB' #piece 单位
 )
-url_download(exe_href,showBar=bar)
+download(exe_href,showBar=bar)
 
 
 
