@@ -8,7 +8,17 @@ A toolbox for data grabbing and processing in python 3
 Introduction
 ------------
 
-**cutout** is a Python toolbox for data grabbing and processing. This software is still under development, improvement and perfection.
+**cutout** is a Python toolbox for data grabbing and processing. Types::
+
+
+This software is still under development, improvement and perfection.
+
+* Grab html page to get data
+* Download files from the Internet
+* ProgressBar for download
+* Cache use memory or file system
+* Generate SQL statements
+* More powerful features
 
 
 Pre-requisites
@@ -22,7 +32,7 @@ Pre-requisites
 Installation
 ------------
 
-you can download **cutout** by [click here](https://github.com/yangjiePro/cutout/archive/master.zip), and use it in your code like this:
+you can download **cutout** by [click here](https://github.com/yangjiePro/cutout/archive/master.zip), and use it in your code like this::
 
 ```python
 from cutout import download, cutout
@@ -34,7 +44,7 @@ from cutout.util import sec2time
 Documentation
 -------------
 
-to get baidu music pc software download url, like this:
+to get baidu music pc software download url, like this::
 
     >>> from cutout import cutout
     >>> para = {} #p aram
@@ -45,7 +55,7 @@ to get baidu music pc software download url, like this:
     >>> cutout(**para) # do grab
     'http://qianqian.baidu.com/download/BaiduMusic-12345630.exe'
 
-to create a cache, like this:
+to create a cache, like this::
 
     >>> from cutout.cache import FileCache
     >>> c = FileCache('./cache') # set cache dir './cache'
@@ -55,7 +65,7 @@ to create a cache, like this:
     >>> c.get("missing") is None
     True
 
-to create a ProgressBar for download, like this:
+to create a ProgressBar for download, like this:：
 
     >>> from cutout import download
     >>> from cutout.common import ProgressBar
