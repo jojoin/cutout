@@ -10,15 +10,15 @@ Introduction
 
 **cutout** is a Python toolbox for data grabbing and processing. Types::
 
-
-This software is still under development, improvement and perfection.
-
 * Grab html page to get data
 * Download files from the Internet
 * ProgressBar for download
 * Cache use memory or file system
 * Generate SQL statements
 * More powerful features
+
+This software is still under development, improvement and perfection.
+
 
 
 Pre-requisites
