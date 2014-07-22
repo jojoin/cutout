@@ -24,8 +24,8 @@ This software is still under development, improvement and perfection.
 Pre-requisites
 --------------
 
- * Python 3.2+ 
- * import MySQLdb
+ * Python 3.4+ 
+ * import PyMySQL
  
 
 
