@@ -194,8 +194,7 @@ def get_response(url):
 ## 抓取网页html
 def get_html(url, encoding=None, timeout=None):
 	if timeout and timeout>0: #设置‘全局’超时时间
-		pass
-		#socket.setdefaulttimeout(timeout)
+		socket.setdefaulttimeout(timeout)
 	response = get_response(url)
 	if not response:
 		return None
