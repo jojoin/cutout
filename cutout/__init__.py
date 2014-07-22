@@ -6,17 +6,65 @@
 
 import os.path
 import sys
+import re
+import time
+import threading  
 import urllib
 import urllib.request
 import urllib.parse
-import time
-import re
+import socket #设置全局超时
+
 
 from .util import sec2time, rangable
 from .common import ProgressBar
 
 
-##“剪”出数据
+
+
+
+
+## 多线程批量剪切数据
+class ThreadCutout(threading.Thread):
+    def __init__(self,url,para,cutout,callback):  
+        threading.Thread.__init__(self)  
+        self.url = url  
+        self.para = para  
+        self.cutout = cutout  
+        self.callback = callback  
+    def run(self):
+    	#print('bingfa url '+self.url)
+    	data = self.cutout(url=self.url,**self.para)
+    	self.callback(data)
+
+
+## 多线程批量剪切数据
+# para.callback 数据完成获取后的回调函数
+def cutouts(**para):
+	if not 'urls' in para:
+		return None;
+	urls = para['urls']
+	del para['urls'] # 删除不支持的参数
+	data = [] # 数据
+	threads = [] # 线程
+	#子线程数据到达回调
+	def dback(d):
+		data.append(d)
+	# 建立子线程
+	for u in urls:
+		threads.append(ThreadCutout(u,para,cutout,dback))
+	# 开始所有子线程
+	for t in threads:
+		t.start()
+	# 主线程中等待所有子线程退出
+	for t in threads:
+		t.join()
+	# 返回获取的所有数据
+	return data
+
+
+
+
+## “剪”出数据
 def cutout(
 		url=None,
 		data=None,
@@ -27,16 +75,14 @@ def cutout(
 		rid=False, # “不包含/排除”的字符
 		split=None, #分割为数组
 		encoding='utf-8', #编码
+		timeout=None, #超时错误
 		dealwith=None #对“剪”的结果进行再次处理，可递归进行
 	):
 	if url:
-		data = get_html(url,encoding)
+		data = get_html(url,encoding,timeout)
 	if not data:
 		return None
-	if start==0 
-		and end==0 
-		and not match
-		and not split:
+	if start==0 and end==0 and not match and not split:
 		return data
 	#正则匹配 match
 	if match:
@@ -96,6 +142,9 @@ def _dealwith(data,deal):
 
 
 
+
+
+
 ## 获取url文件的大小
 def url_size(url):
 	if isinstance(url, str):
@@ -128,8 +177,11 @@ def get_response(url):
 		url = url,
 		headers = headers
 	)
+	#try: 
 	response = urllib.request.urlopen(req)
 	data = response.read()
+	#except: # 抓取出错
+	#	return None
 	if response.info().get('Content-Encoding') == 'gzip':
 		data = ungzip(data)
 	elif response.info().get('Content-Encoding') == 'deflate':
@@ -140,8 +192,14 @@ def get_response(url):
 
 
 ## 抓取网页html
-def get_html(url, encoding=None):
-	content = get_response(url).data
+def get_html(url, encoding=None, timeout=None):
+	if timeout and timeout>0: #设置‘全局’超时时间
+		pass
+		#socket.setdefaulttimeout(timeout)
+	response = get_response(url)
+	if not response:
+		return None
+	content = response.data
 	if encoding:
 		content = content.decode(encoding,'ignore')
 	return content
