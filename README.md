@@ -39,14 +39,23 @@ read or run the [test.py](https://github.com/yangjiePro/cutout/blob/master/test.
 to get baidu music pc software download url, like this:
 
     >>> from cutout import cutout
-    >>> para = {}
-    >>> para.url = 'http://music.baidu.com/'
-    >>> para.start = '<a class="downloadlink-pc"'
-    >>> para.end = '>下载PC版</a>'
-    >>> para.dealwith = { 'start':'href="', 'rid':'"', 'end':'"' } #
-    >>> cutout(**para)
+    >>> para = {} #p aram
+    >>> para['url'] = 'http://music.baidu.com/'
+    >>> para['start'] = '<a class="downloadlink-pc"'
+    >>> para['end'] = '>下载PC版</a>'
+    >>> para['dealwith'] = { 'start':'href="', 'rid':'"', 'end':'"' } # get href url
+    >>> cutout(**para) # do grab
     'http://qianqian.baidu.com/download/BaiduMusic-12345630.exe'
 
+to create a cache, like this:
+
+    >>> from cutout.cache import FileCache
+    >>> c = FileCache('./cache') # set cache dir './cache'
+    >>> c.set("foo", "value")
+    >>> c.get("foo")
+    'value'
+    >>> c.get("missing") is None
+    True
 
 read or run the [test.py](https://github.com/yangjiePro/cutout/blob/master/test.py) to get more example. 
 
