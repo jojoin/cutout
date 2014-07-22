@@ -8,7 +8,7 @@ A toolbox for data grabbing and processing in python 3
 Introduction
 ------------
 
-**cutout** is a Python toolbox for data grabbing and processing, This software is still under development, improvement and perfection.
+**cutout** is a Python toolbox for data grabbing and processing.  This software is still under development, improvement and perfection.
 
 
 Pre-requisites
