@@ -57,6 +57,15 @@ to create a cache, like this:
     >>> c.get("missing") is None
     True
 
+to create a ProgressBar for download, like this:
+
+    >>> from cutout.cache import FileCache
+    >>> bar = ProgressBar(piece_total=1);
+    >>> face = { 'sh_piece_division':1024, 'sh_piece_unit':'KB' }
+    >>> bar.face(**face)
+    >>> download('http://qianqian.baidu.com/download/BaiduMusic-12345630.exe',showBar=bar)
+    '[=============================>                    ]  59.23%  14.81%/s  1280.00KB/s  5120.00KB/8644.81KB  00:00:04'
+
 read or run the [test.py](https://github.com/yangjiePro/cutout/blob/master/test.py) to get more example. 
 
 ```bash
