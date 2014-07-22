@@ -34,8 +34,6 @@ from cutout.util import sec2time
 Documentation
 -------------
 
-read or run the [test.py](https://github.com/yangjiePro/cutout/blob/master/test.py) to get more example. 
-
 to get baidu music pc software download url, like this:
 
     >>> from cutout import cutout
@@ -59,7 +57,8 @@ to create a cache, like this:
 
 to create a ProgressBar for download, like this:
 
-    >>> from cutout.cache import FileCache
+    >>> from cutout import download
+    >>> from cutout.common import ProgressBar
     >>> bar = ProgressBar(piece_total=1);
     >>> face = { 'sh_piece_division':1024, 'sh_piece_unit':'KB' }
     >>> bar.face(**face)
