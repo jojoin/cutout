@@ -2,26 +2,196 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
-  <title>cutout 中文文档</title>
-  <style type="text/css">
-  *{ margin: 0; padding: 0; border: 0; color: #ddd; font-family: Lucida,Verdana,Hiragino Sans GB,STHeiti,WenQuanYi Micro Hei,Droid Sans Fallback,SimSun,sans-serif; text-shadow: 0 1px 1px #000; }
-  body{
-  	background-color: #333;
-  }
-  h1{
-  	width: 100%; font-size: 36px; text-align: center;
-  	margin: 16px 0;
-  }
-  </style>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+	<title>cutout 中文文档</title>
+	<style type="text/css">
+	*{ margin: 0; padding: 0; border: 0; color: #ddd; font-family: Lucida,Verdana,Hiragino Sans GB,STHeiti,WenQuanYi Micro Hei,Droid Sans Fallback,SimSun,sans-serif; text-shadow: 0 1px 1px #000; }
+	body{
+		background-color: #333;
+	}
+	h1{
+		width: 100%; font-size: 36px; text-align: center;
+		margin: 16px 0;
+	}
+	h3{
+		margin: 16px; font-size: 20px;
+	}
+	h3:before{
+		content: '۞ ';
+	}
+	h6{
+		font-size: 15px; margin: 10px 0;
+	}
+	h6.div{
+		color: #555; text-shadow: none;
+		margin-top: 16px; margin-bottom: 5px;
+	}
+	h6.div.first{
+		margin-top: 0px;
+	}
+	dfn{
+		padding: 0 3px;
+		font-family: Lucida Grande, Verdana, Geneva, Sans-serif;
+		color: #008A11;
+		font-weight: bold;
+		font-style: normal;
+	}
+	var{
+		padding: 0 3px;
+		font-family: Lucida Grande, Verdana, Geneva, Sans-serif;
+		color: #DBA503;
+		font-weight: normal;
+		font-style: normal;
+	}
+	kbd{
+		padding: 0 3px;
+		font-family: Lucida Grande, Verdana, Geneva, Sans-serif;
+		color: #A70000;
+		font-weight: bold;
+		font-style: normal;
+	}
+	/* 导航按钮 */
+	a.navbtn{
+         -webkit-border-radius: 5px;
+           -moz-border-radius: 5px;
+                border-radius: 5px;
+        box-shadow:inset 0 0 0 1px #617586,
+	        inset 0 0 40px 5px rgba(0,0,0,.4),
+	        0 0 2px 1px rgba(0,0,0,.5);
+        font-size: 16px; 
+        margin:10px 10px 20px;
+        padding: 5px 10px;
+        display:inline-block;
+        background:#3E5263;
+        text-align:center;
+        text-decoration: none;
+    }
+    a.navbtn:hover{
+        box-shadow:inset 0 0 0 1px #617586,inset 0 0 40px 5px rgba(0,0,0,.25),0 0 2px 1px rgba(0,0,0,.5);
+        cursor: pointer;
+    }
+	a.navlink{
+		color: #3291B5;
+		font-size:13px; 
+		display: inline-block;
+		/*background: #000;*/
+		width: 260px;
+        text-decoration: none;
+
+	}
+    a.nav{
+    	width: 100%; height: 0;
+    }
+
+	.con{
+		padding: 10px 14px;
+		font-size: 14px; color: #aaa;
+		border: 1px solid #3d3d3d; background-color: #2d2d2d;
+	}
+
+	.cate{
+		
+	}
+	.item{
+		
+	}
+
+	div,h3{
+		margin-left:8%; margin-right:8%;
+	}
+	</style>
 </head>
 <body>
 
-  <h1>
-	  <span style="font-size:46px;">
-	  	<span style="color:#1E9E00;">c</span><span style="color:#999;">ut</span><span style="color:#97AB00;">o</span><span style="color:#999;">ut</span>
-	  </span>
-   中文文档</h1>
+	<h1>
+		<span style="font-size:46px;">
+		<span style="color:#1E9E00;">c</span><span style="color:#999;">ut</span><span style="color:#97AB00;">o</span><span style="color:#999;">ut</span>
+		</span>
+	中文文档</h1>
+
+	<h3>快速导航</h3>
+
+	<div>
+
+		<a class="navbtn" href="#ydxz">阅读须知</a>
+		<a class="navbtn" href="#sjzq">数据抓取</a>
+		<a class="navbtn" href="#hc">缓存</a>
+		<a class="navbtn" href="#sjkzc">数据库支持</a>
+		<a class="navbtn" href="#qt">其它</a>
+
+		<h6 class="div first">cutout 数据采集</h6>
+		<a class="navlink" href="#cutout">cutout() 采集数据</a>
+		<a class="navlink" href="#cutouts">cutouts() 多线程并发采集</a>
+
+		<h6 class="div">mysql 数据库支持</h6>
+		<a class="navlink" href="#setconf">setconf() 配置</a>
+		<a class="navlink" href="#connect">connect() 连接数据库</a>
+		<a class="navlink" href="#disconnect">disconnect() 断开连接</a>
+		<a class="navlink" href="#query">query() 使用SQL查询</a>
+
+		<h6 class="div">cache 缓存</h6>
+		<a class="navlink" href="#MemCache">MemCache 内存缓存</a>
+		<a class="navlink" href="#FileCache">FileCache 文件缓存</a>
+
+		<h6 class="div">util 工具箱</h6>
+		<a class="navlink" href="#urlencode">urlencode() url编码</a>
+		<a class="navlink" href="#urldecode">urldecode() url解码</a>
+
+		<h6 class="div">common 通用组件</h6>
+		<a class="navlink" href="#ProgressBar">ProgressBar 进度条组件</a>
+
+		<h6 class="div">http 外部接口</h6>
+		<a class="navlink" href="#respond">respond() 注册外部接口</a>
+		<a class="navlink" href="#start">start() 启动接口服务</a>
+
+	</div>
+
+
+	<a name="ydxz"></a>
+	<h3 name="ydxz">阅读须知</h3>
+	<div>
+	<p class="con">
+		<dfn>cutout</dfn> 是一个强大的数据抓取/采集与处理工具箱。
+
+	</p>
+	</div>
+
+	<!--函数-->
+	<div class="item">
+
+
+	</div>
+
+
+
+
+
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+<br>
+<br>
+<br>
+<br>
+
+
+<br>
+<br>
+<br>
+<br>
+
+
 
 </body>
 </html>
