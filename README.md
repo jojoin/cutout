@@ -32,7 +32,7 @@ Pre-requisites
 Installation
 ------------
 
-you can download **cutout** by [click here](https://github.com/yangjiePro/cutout/archive/master.zip), and use it in your code like this::
+You can download **cutout** by [click here](https://github.com/yangjiePro/cutout/archive/master.zip), and use it in your code like this::
 
 ```python
 from cutout import download, cutout
@@ -44,7 +44,7 @@ from cutout.util import sec2time
 Documentation
 -------------
 
-to get baidu music pc software download url, like this::
+To get baidu music pc software download url, like this::
 
     >>> from cutout import cutout
     >>> para = {} #p aram
@@ -55,7 +55,7 @@ to get baidu music pc software download url, like this::
     >>> cutout(**para) # do grab
     'http://qianqian.baidu.com/download/BaiduMusic-12345630.exe'
 
-to create a cache, like this::
+To create a cache, like this::
 
     >>> from cutout.cache import FileCache
     >>> c = FileCache('./cache') # set cache dir './cache'
@@ -65,7 +65,7 @@ to create a cache, like this::
     >>> c.get("missing") is None
     True
 
-to create a ProgressBar for download, like this:：
+To create a ProgressBar for download, like this:：
 
     >>> from cutout import download
     >>> from cutout.common import ProgressBar
@@ -75,7 +75,7 @@ to create a ProgressBar for download, like this:：
     >>> download('http://qianqian.baidu.com/download/BaiduMusic-12345630.exe',showBar=bar)
     '[=============================>                    ]  59.23%  14.81%/s  1280.00KB/s  5120.00KB/8644.81KB  00:00:04'
 
-read or run the [example.py](https://github.com/yangjiePro/cutout/blob/master/example.py) to get more example. 
+Read or run the [example.py](https://github.com/yangjiePro/cutout/blob/master/example.py) to get more example. 
 
 Download and use the browser to open the [document.zh.htm](https://github.com/yangjiePro/cutout/blob/master/ocument.zh.htm), A detailed understanding of all API. 
 
@@ -86,10 +86,10 @@ $ python3 cutout/test.py
 Author
 ------
 
-cutout is developed and maintained by Yang Jie (yangjie@jojoin.com).
+**cutout** is developed and maintained by Yang Jie (yangjie@jojoin.com).
 It can be found here: http://github.com/yangjiePro/cutout
 
-contact way:
+Contact way:
 
 * Home : http://jojoin.com/user/1
 * Email: yangjie@jojoin.com
