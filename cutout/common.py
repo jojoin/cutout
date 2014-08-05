@@ -9,7 +9,7 @@ import sys
 import re
 import time
 
-from .util import sec2time
+from .util import sec2time, parse_argv
 
 
 #default_encoding = sys.getfilesystemencoding()
@@ -20,7 +20,7 @@ from .util import sec2time
 # the old function
 
 
-#ProgressBar 进度条组件
+##ProgressBar 进度条组件
 #注释为了方便，把所有“进度条”文字改为“bar”
 class ProgressBar:
 
@@ -171,44 +171,72 @@ class ProgressBar:
 
 
 
+## 命令行映射器
+# 从命令行映射到函数
+class CommandDirect:
 
+	def __init__(self
+		, type='*' #已数组形式解包参数
+		, main=None #main函数
+	):
+		self.maps = {}
+		self.type = type
+		self.main = main
 
-
-
-
-'''
-
-def url_save(url, filepath, bar, refer=None):
-	headers = {}
-	if refer:
-		headers['Referer'] = refer
-	request = urllib2.Request(url, headers=headers)
-	response = urllib2.urlopen(request)
-	file_size = int(response.headers['content-length'])
-	assert file_size
-	if os.path.exists(filepath):
-		if file_size == os.path.getsize(filepath):
-			if bar:
-				bar.done()
-			print 'Skip %s: file already exists' % os.path.basename(filepath)
+	## 执行路由
+	def __call__(self):
+		if not self.main:
+			self.direct()
 			return
-		else:
-			if bar:
-				bar.done()
-			print 'Overwriting', os.path.basename(filepath), '...'
-	with open(filepath, 'wb') as output:
-		received = 0
-		while True:
-			buffer = response.read(1024*256)
-			if not buffer:
-				break
-			received += len(buffer)
-			output.write(buffer)
-			if bar:
-				bar.update_received(len(buffer))
-	assert received == file_size == os.path.getsize(filepath), '%s == %s == %s' % (received, file_size, os.path.getsize(filepath))
+		#调用处理
+		param = sys.argv[1:]
+		self.callfunc(self.main,param)
 
-'''
+
+	## 添加映射 将命令行参数 映射到函数
+	def add(self,name,func):
+		self.maps[name] = func
+
+
+	## 调用处理
+	def callfunc(self,func,param):
+		if not param:
+			func() #无参数
+			return 
+		tp = self.type
+		if '**'==tp:
+			param = parse_argv(param) #关键字参数解包
+			func(**param)
+		elif '*'==tp:
+			func(*param)
+
+
+	## 执行路由
+	def direct(self):
+		if not sys.argv:
+			return
+		argv = sys.argv[1:]
+		if not argv:
+			return
+		name = argv[0]
+		maps = self.maps
+		if not name in maps:
+			return
+		param = argv[1:]
+		#调用处理
+		self.callfunc(maps[name],param)
+
+
+			
+
+
+
+
+
+
+
+
+
 
 
 
