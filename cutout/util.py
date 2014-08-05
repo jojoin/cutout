@@ -18,9 +18,9 @@ def fillside(stuff,width=None,fill=' ',side='left'):
 	if w > width:
 		return num
 	fillstr = fill * (width-w)
-	if side = 'left':
+	if side=='left':
 		return fillstr+stuff
-	elif side = 'right':
+	elif side=='right':
 		return stuff+fillstr
 	else:
 		return stuff
