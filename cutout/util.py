@@ -8,6 +8,28 @@ import urllib.parse as urlparse
 
 
 
+## 补全不足
+# @side 填充位置 left 
+def fillside(stuff,width=None,fill=' ',side='left'):
+	if not width or not isinstance(width,int):
+		return stuff
+	stuff = str(stuff)
+	w = len(stuff)
+	if w > width:
+		return num
+	fillstr = fill * (width-w)
+	if side = 'left':
+		return fillstr+stuff
+	elif side = 'right':
+		return stuff+fillstr
+	else:
+		return stuff
+
+
+
+
+
+
 ## 限定数值范围
 def rangable(num,low=None,top=None):
 	if low and num<low:
@@ -19,9 +41,10 @@ def rangable(num,low=None,top=None):
 
 
 
-## 解析命令行参数 （去掉key里的-符号）
-def parse_argv(argv):
-	argv = argv[1:] # 去除文件名
+## 解析命令行参数 
+# @kr 去掉key里的 “-” 符号
+def parse_argv(argv, kr='-'):
+	#argv = argv[1:] # 去除文件名
 	leg = len(argv)
 	num = -1
 	redict = {}
@@ -30,7 +53,7 @@ def parse_argv(argv):
 		num += 1
 		if num>=leg: break
 		if num%2: continue
-		k = argv[num].replace('-','')
+		k = argv[num].replace(kr,'')
 		v = argv[num+1] if num+1<leg else ''
 		redict[k] = v
 	return redict
@@ -88,10 +111,5 @@ def urlencode(stuff) :
 ## url解码
 def urldecode(str) :
 	return urlparse.unquote(str)
-
-
-
-
-
 
 
