@@ -19,7 +19,6 @@ from .util import sec2time, parse_argv
 
 # the old function
 
-
 ##ProgressBar 进度条组件
 #注释为了方便，把所有“进度条”文字改为“bar”
 class ProgressBar:
