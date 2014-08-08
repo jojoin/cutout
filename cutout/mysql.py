@@ -30,7 +30,10 @@ _dbConfig = {
 	'passwd':'',
 	'db':'',
 	'port':3306,
-	'charset': 'utf8'
+	'charset': 'utf8',
+	'connect_timeout': 3600,
+	'autocommit': False #默认提交事务
+
 }
 
 
@@ -51,7 +54,6 @@ _curcon = None
 
 ## 配置
 _config = {
-	'connect_timeout': 3600, #链接过期时间 1小时
 	'cursor_type':pymysql.cursors.Cursor # 游标风格
 }
 
@@ -81,7 +83,7 @@ def setconf(**conf):
 # @param conf 数据库配置
 # @param reset 覆盖(重设)默认数据库连接
 # @param name 把数据库链接缓存起来，或者获取被缓存的链接
-def connect(dbconf=None, reset=None, name='default', timeout=3600):
+def connect(dbconf=None, reset=None, name='default', timeout=3500):
 	global _connects, _curcon, _config
 	con = None
 	# 新连接
@@ -128,10 +130,10 @@ def disconnect(name='default'):
 
 
 ## 获得数据库操作游标
-def cursor(type=None):
+def cursor(cursor_type=None):
 	global _connects, _curcon, _config
-	if type:
-		return _connects[_curcon]['connect'].cursor(type)
+	if cursor_type:
+		return _connects[_curcon]['connect'].cursor(cursor_type)
 	else:
 		return _connects[_curcon]['connect'].cursor(_config['cursor_type'])
 	
@@ -145,8 +147,12 @@ def cursor(type=None):
 
 ## 执行sql语句
 def query(sql, cursor_type=None):
-	cur = cursor(cursor_type=None)
+	con = connect()
+	con.ping()
+	cur = cursor(cursor_type)
 	cur.execute(sql)
+	con.commit() #提交事务
+	cur.close()
 	return cur
 
 
@@ -167,17 +173,21 @@ def select(table, field='*', where='', limit='', orderby='', cursor=None):
 
 
 ## 获得格式化的 INSERT INTO 语句
-def fixsql_insert(table,field):
+def fixsql_insert(table,data):
 	na=[]
 	var = []
-	for f in field:
-		na.append(f)
-		var.append('%('+f+')s')
+	for k,v in data.items():
+		na.append(k)
+		dt = '%('+k+')s'
+		if isinstance(v, str):
+			dt = '"'+dt+'"'
+			data[k] = escape_string(v) #特殊字符转义
+		var.append(dt)
 	return ('INSERT INTO '+table+' ('
 		+(','.join(na))
 		+') VALUE ('
 		+(','.join(var))
-		+')')
+		+')')%data
 
 
 
@@ -192,6 +202,16 @@ def fixsql_update(table,field,where='',limit=''):
 	if limit:
 		sql += ' LIMIT '+limit
 	return sql
+
+
+
+##格式化字符串
+def escape_string(string):
+	return string\
+		.replace('\\', '\\\\')\
+		.replace('"', '\\"')\
+		.replace("'", "\\'")
+
 
 
 
