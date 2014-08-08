@@ -28,8 +28,6 @@ def fillside(stuff,width=None,fill=' ',side='left'):
 
 
 
-
-
 ## 限定数值范围
 def rangable(num,low=None,top=None):
 	if low and num<low:
