@@ -25,33 +25,34 @@ from .common import ProgressBar
 
 ## 多线程批量剪切数据
 class ThreadCutout(threading.Thread):
-    def __init__(self,url,para,cutout,callback):  
+    def __init__(self,url,para,callback):  
         threading.Thread.__init__(self)  
         self.url = url  
-        self.para = para  
-        self.cutout = cutout  
+        self.para = para
         self.callback = callback  
     def run(self):
     	#print('bingfa url '+self.url)
-    	data = self.cutout(url=self.url,**self.para)
+    	data = cutout(url=self.url,**self.para)
     	self.callback(data)
 
 
 ## 多线程批量剪切数据
 # para.callback 数据完成获取后的回调函数
-def cutouts(**para):
+def cutouts(urls,threadback=None,**para):
 	if not 'urls' in para:
 		return None;
-	urls = para['urls']
-	del para['urls'] # 删除不支持的参数
+	#urls = para['urls']
+	#del para['urls'] # 删除不支持的参数
 	data = [] # 数据
 	threads = [] # 线程
 	#子线程数据到达回调
 	def dback(d):
+		if threadback:
+			threadback(d)
 		data.append(d)
 	# 建立子线程
 	for u in urls:
-		threads.append(ThreadCutout(u,para,cutout,dback))
+		threads.append(ThreadCutout(u,para,dback))
 	# 开始所有子线程
 	for t in threads:
 		t.start()
@@ -128,16 +129,34 @@ def cutout(
 def _dealwith(data,deal):
 	if not deal:
 		return data
-	if isinstance(data,list):
-		relist = []
-		for one in data:
-			deal['data'] = one;
-			one = cutout(**deal)
-			relist.append(one)
-		return relist
-	if isinstance(data,str):
-		deal['data'] = data;
-		return cutout(**deal)
+	if isinstance(deal,dict):
+		if isinstance(data,str):
+			deal['data'] = data;
+			return cutout(**deal)
+		if isinstance(data,list):
+			relist = []
+			for one in data:
+				deal['data'] = one;
+				relist.append(cutout(**deal))
+			return relist
+	# deal为数组
+	if isinstance(deal,list) or isinstance(deal,tuple):
+		if isinstance(data,str):
+			relist = []
+			for d in deal:
+				d['data'] = data
+				relist.append(cutout(**d))
+			return relist
+		if isinstance(data,list):
+			relist = []
+			for one in data:
+				reli = []
+				for d in deal:
+					d['data'] = one
+					reli.append(cutout(**d))
+				relist.append(reli)
+			return relist
+
 
 
 
@@ -229,15 +248,21 @@ def url_save(url, file=None, path=None, headers={} ,arrive=None):
 	if path==None:
 		path=''
 	filepath = os.path.join(path,file)
+	totalsize = 0
+	time1 = time.time()
 	with open(filepath, 'wb') as output:
 		while True:
 			buffer = response.read(1024*readS)
 			if not buffer:
 				break
 			size = len(buffer)
+			totalsize += size
 			output.write(buffer)
 			if arrive:
 				arrive(size,file_size)
+	time2 = time.time()
+	#返回值 总大小 下载时间
+	return totalsize,time2-time1,{'url':url,'file':file,'path':path}
 
 
 
@@ -262,7 +287,64 @@ def download(url, file=None, path=None, showBar=False, headers={}, pretend=True,
 			if not bar.displayed:
 				bar.set(piece_total=file_size)
 			bar.step(size)
-	url_save(url, file, path, headers=headers,arrive=arrive)
+	return url_save(url, file, path, headers=headers,arrive=arrive)
+
+
+
+
+
+
+## 多线程批量剪切数据
+class ThreadDownload(threading.Thread):
+    def __init__(self,url,file,path,para,callback):  
+        threading.Thread.__init__(self)
+        self.url = url  
+        self.file = file  
+        self.path = path
+        self.para = para  
+        self.download = download  
+        self.callback = callback  
+    def run(self):
+    	#print('bingfa url '+self.url)
+    	data = download(url=self.url,file=self.file,path=self.path,**self.para)
+    	self.callback(data)
+
+
+
+## 多线程批量下载
+# para.callback 数据完成获取后的回调函数
+# 线程完成回调函数
+def downloads(urls,path=None,file=None,files=None,paths=None,threadback=None,**para):
+	if not path and not paths:
+		return None;
+	data = [] # 数据
+	threads = [] # 线程
+	#子线程数据到达回调
+	def dback(d):
+		if threadback:
+			threadback(d)
+		data.append(d)
+	# 建立子线程
+	n = 0
+	for u in urls:
+		url = u
+		if files:
+			file = files[n]
+		if paths:
+			path = path[n]
+		threads.append(ThreadDownload(url,file,path,para,dback))
+		n += 1
+	# 开始所有子线程
+	for t in threads:
+		t.start()
+	# 主线程中等待所有子线程退出
+	for t in threads:
+		t.join()
+	# 返回获取的所有数据
+	return data
+
+
+
 
 
 
@@ -341,6 +423,12 @@ if __name__=='__main__':
 	bar.face(ui_leg=30)
 	url_download('http://dlsw.baidu.com/sw-search-sp/soft/3a/12350/QQ6.0.1404885253.exe'
 		,'qq.exe',showBar=bar)
+
+
+
+
+
+
 
 
 
