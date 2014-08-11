@@ -5,7 +5,57 @@
 import os, time
 
 
+from cutout import cutout
 
+datastr = '''
+&lthtml&gt
+  &lthead&gt
+    &lttitle&gthtml网页标题&lt/title&gt
+  &lt/head&gt
+  &ltbody&gt
+     &ltul id="img"&gt
+     	&ltli&gt &ltp&gtpic1&lt/p&gt &ltimg src="/img/pic1.jpg" /&gt  &lt/li&gt
+     	&ltli&gt &ltp&gtpic2&lt/p&gt &ltimg src="/img/pic2.jpg" /&gt  &lt/li&gt
+     	&ltli&gt &ltp&gtpic3&lt/p&gt &ltimg src="/img/pic3.jpg" /&gt  &lt/li&gt
+     &lt/ul&gt
+  &lt/body&gt
+&lt/html&gt
+'''
+
+# 获取网页title
+
+title = cutout(
+  data=datastr,
+  start="&lttitle&gt",
+  end="&lt/title&gt"
+)
+print(title) #  html网页标题
+
+# 获取图片地址
+
+href = cutout(
+  data=datastr,
+  start="&ltul id=\"img\"&gt",
+  end="&lt/ul&gt",
+  split="&ltli&gt", #分割
+  dealwith=({
+    "start":"&ltp&gt", #获取名称
+    "end":"&lt/p&gt" 
+  },{
+    "start":'&ltimg src="', #获取网址
+    "rid":'"',
+    "end":'"'
+  })
+
+)
+
+print(href) #  [['', None], ['pic1', '/img/pic1.jpg'], ['pic2', '/img/pic2.jpg'], ['pic3', '/img/pic3.jpg']]
+# 获取的结果数组第一个为  ['', None] 因为以 &ltli&gt 分割时 第一段字符为空
+
+
+
+
+exit(0);
 
 
 from cutout.cache import FileCache
