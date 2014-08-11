@@ -77,7 +77,7 @@ To create a ProgressBar for download, like this:：
 
 Read or run the [example.py](https://github.com/yangjiePro/cutout/blob/master/example.py) to get more example. 
 
-Download and use the browser to open the [document.zh.htm](https://github.com/yangjiePro/cutout/blob/master/ocument.zh.htm), A detailed understanding of all API. 
+Download and use the browser to open the [document.zh.htm](https://github.com/yangjiePro/cutout/blob/master/document.zh.htm), A detailed understanding of all API. 
 
 ```bash
 $ python3 cutout/test.py
