@@ -4,20 +4,30 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
 	<title>cutout 中文文档</title>
+	<link href="http://cdn.bootcss.com/highlight.js/8.1/styles/atelier-dune.dark.min.css" rel="stylesheet">
+
 	<style type="text/css">
 	*{ margin: 0; padding: 0; border: 0; color: #ddd; font-family: Lucida,Verdana,Hiragino Sans GB,STHeiti,WenQuanYi Micro Hei,Droid Sans Fallback,SimSun,sans-serif; text-shadow: 0 1px 1px #000; }
 	body{
 		background-color: #333;
 	}
+
+	div,h3,h4{
+		margin-left:8%; margin-right:8%;
+	}
+
 	h1{
 		width: 100%; font-size: 36px; text-align: center;
 		margin: 16px 0;
 	}
 	h3{
-		margin: 16px; font-size: 20px;
+		margin-bottom: 16px; margin-top: 25px;  font-size: 20px;
 	}
 	h3:before{
 		content: '۞ ';
+	}
+	h4{
+
 	}
 	h6{
 		font-size: 15px; margin: 10px 0;
@@ -79,6 +89,9 @@
         text-decoration: none;
 
 	}
+	a.navlink:hover{
+		text-decoration: underline;
+	}
     a.nav{
     	width: 100%; height: 0;
     }
@@ -86,7 +99,8 @@
 	.con{
 		padding: 10px 14px;
 		font-size: 14px; color: #aaa;
-		border: 1px solid #3d3d3d; background-color: #2d2d2d;
+		border: 1px solid #3d3d3d; 
+		/*background-color: #2d2d2d;*/
 	}
 
 	.cate{
@@ -95,10 +109,25 @@
 	.item{
 		
 	}
-
-	div,h3{
-		margin-left:8%; margin-right:8%;
+	code{
+		display: inline-block !important;
 	}
+	pre,code{
+		/*border: 1px solid #444; */
+		margin: 15px 0;
+		border-radius: 5px;
+		text-shadow: none;
+		font-size: 14px; 
+		color: #eee !important;
+	}
+
+	pre code{
+		margin: none;
+		background: none; border: none;
+		text-shadow: none;
+		display: block !important;
+	}
+
 	</style>
 </head>
 <body>
@@ -113,15 +142,19 @@
 
 	<div>
 
-		<a class="navbtn" href="#ydxz">阅读须知</a>
-		<a class="navbtn" href="#sjzq">数据抓取</a>
-		<a class="navbtn" href="#hc">缓存</a>
-		<a class="navbtn" href="#sjkzc">数据库支持</a>
-		<a class="navbtn" href="#qt">其它</a>
+		<a class="navbtn" href="https://github.com/yangjiePro/cutout/archive/master.zip">下载源码</a><a class="navbtn" href="https://github.com/yangjiePro/cutout">托管地址</a>
 
 		<h6 class="div first">cutout 数据采集</h6>
 		<a class="navlink" href="#cutout">cutout() 采集数据</a>
 		<a class="navlink" href="#cutouts">cutouts() 多线程并发采集</a>
+		<a class="navlink" href="#download">download() 下载文件</a>
+		<a class="navlink" href="#downloads">downloads() 多线程并发下载</a>
+		<a class="navlink" href="#get_html">get_html() 获取网页html</a>
+		<a class="navlink" href="#url_save">url_save() 下载url文件</a>
+		<a class="navlink" href="#url_size">url_size() 获取url文件大小</a>
+		<a class="navlink" href="#remove_html_tags">remove_html_tags() 去除html标签</a>
+		<a class="navlink" href="#ungzip">ungzip() gzip解压</a>
+
 
 		<h6 class="div">mysql 数据库支持</h6>
 		<a class="navlink" href="#setconf">setconf() 配置</a>
@@ -162,34 +195,60 @@
 
 	</div>
 
+	<a name="ydxz"></a>
+	<h3 name="ydxz">cutout 数据采集</h3>
+	<div>
+	<p class="con">
+		使用<dfn>cutout</dfn>可以方便的从网页上抓取需要的数据。<br>
+	</p>
+<pre><code>from cutout import cutout
+#参数说明
+cutout(
+    url = None, #要采集的url地址
+)
+</code></pre>
+
+	</div>
+	<a name="cutout"></a>
+	<h4></h4>
+	<div>
+	<p class="con">
+		使用<dfn>cutout</dfn>可以方便的从网页上抓取需要的数据。
+	</p>
+	</div>
+
+<div>
+
+<pre><code>#!/usr/bin/python
+#-*- coding:utf8 -*-
+
+import sys,re
+import urllib.parse as urlparse
+
+## 限定数值范围
+def rangable(num,low=None,top=None):
+	if low and num < low:
+		return low
+	elif top and num > top:
+		return top
+	else:
+		return num
+</code></pre>
+
+<script type="text/javascript" src="http://lib.sinaapp.com/js/jquery/1.7.2/jquery.min.js"></script>
+<script src="http://cdn.bootcss.com/highlight.js/8.1/highlight.min.js"></script>
+<script src="http://cdn.bootcss.com/highlight.js/8.1/languages/python.min.js"></script>
+
+<script type="text/javascript">
+
+	//hljs.configure({useBR: true});
+
+	$('code').each(function(i, block) {
+		hljs.highlightBlock(block);
+	});
 
 
-
-
-
-
-<br>
-<br>
-<br>
-<br>
-
-
-<br>
-<br>
-<br>
-<br>
-
-
-<br>
-<br>
-<br>
-<br>
-
-
-<br>
-<br>
-<br>
-<br>
+</script>
 
 
 
