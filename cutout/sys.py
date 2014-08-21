@@ -13,7 +13,6 @@ def dir_size(path):
 		return None
 	size = 0
 	for root, dirs, files in os.walk(path):
-		print(root)
 		size += sum([os.path.getsize(os.path.join(root, name)) for name in files])  
 	return size  
 
