@@ -44,7 +44,7 @@ from cutout.util import sec2time
 Documentation
 -------------
 
-中文API手册： [document.zh.htm](http://cutout.jojoin.com/document.zh.htm)
+[中文API手册](http://yangjiepro.github.io/cutout/)
 
 To get baidu music pc software download url, like this::
 
