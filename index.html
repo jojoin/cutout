@@ -212,12 +212,13 @@
 <a name="ydxz"></a>
 <h3 name="ydxz">阅读须知</h3>
 <div>
-<p class="con">
+<p>
 	<dfn>cutout</dfn> 是一个强大的数据抓取/采集与处理工具箱。
-
 </p>
 
-
+<p>
+	<a href="http://cutout.jojoin.com/example.py">example.py</a> 文件中包含更多示例用法和测试用例。
+</p>
 
 <!--函数-->
 <div class="item">
@@ -316,11 +317,12 @@ print(href) #  [['', None], ['pic1', '/img/pic1.jpg'], ['pic2', '/img/pic2.jpg']
 </p>
 
 
-<pre><code>from cutout import cutout
+<pre><code>from cutout import cutouts
 #参数说明
 cutouts(
 	# url 不使用url参数名
 	urls=None, #要采集的url地址列表（可遍历字符串列表或元组）
+	threadback=None, 线程采集完成的回调，参数为采集结果
 	... # 其它参数与 cutout 相同
 )
 </code></pre>
@@ -328,6 +330,228 @@ cutouts(
 <p class="con">
 	<dfn>cutouts</dfn>将开启多个线程，并等待所有子线程执行完毕后，返回结果数组。<br>
 </p>
+
+
+
+
+
+<a name="download"></a>
+<h3 name="download">download 文件下载</h3>
+<p class="con">
+	使用<dfn>cutout</dfn>函数抓取页面静态文件链接后，使用<dfn>download</dfn>下载静态文件。参数 showBar 可传自定义 <a href="#ProgressBar">ProgressBar</a> 对象
+</p>
+<pre><code>from cutout import download
+
+#参数说明
+download(
+	url, #文件url地址
+	file=None, #下载到本地的文件命名（默认与url文件名一致）
+	path=None, #下载路径（默认为脚本当前路径）
+	showBar=False, #是否显示 ProgressBar 进度条（True或者进度条对象）
+	headers={}, #下载时的http请求头部信息
+	pretend=True, #是否伪装成浏览器
+	referer=None #来源链接
+)
+</code></pre>
+
+<p>函数使用示例：</p>
+
+<pre><code>## download 文件下载示例
+
+from cutout import download
+
+fileurl = 'http://cutout.jojoin.com/document.zh.htm'
+
+#自定义下载进度条
+bar = ProgressBar(piece_total=1);
+bar.face(
+	sh_piece_division=1024, #piece 除法
+	sh_piece_unit='KB' #piece 单位
+)
+
+#下载文件
+info = download(fileurl,showBar=bar)
+
+# 返回值 info：
+# (totalsize,time,param)
+# totalsize：总大小
+# time：时间
+# param ：传入的参数
+
+# print输出：
+# [==================>        ]  75.00%  20.00%/s  4322.41KB/s  8644.81KB/8644.81KB  00:00:02
+
+
+
+</code></pre>
+
+
+
+<a name="downloads"></a>
+<h3 name="downloads">downloads 多线程并发下载</h3>
+
+<p class="con">
+	<dfn>downloads</dfn>是<dfn>download</dfn>的多线程并发版本。<br>
+</p>
+
+
+<pre><code>from cutout import downloads
+#参数说明
+downloads(
+	# url 不使用url参数名
+	urls, #要采集的url地址列表（可遍历字符串列表或元组）
+	files=None, #保存文件名数组
+	paths=None, #下载路径数组
+	threadback=None, 线程采集完成的回调，参数为下载结果信息
+	... # 其它参数与 cutout 相同
+)
+</code></pre>
+
+<p class="con">
+	<dfn>cutouts</dfn>将开启多个线程，并等待所有子线程执行完毕后，返回结果数组。<br>
+</p>
+
+
+
+<a name="get_html"></a>
+<h3 name="get_html">get_html 获取网页html</h3>
+<pre><code>from cutout import get_html
+#参数说明
+get_html(
+	url, #要获取的url地址
+	encoding=None, #对获取的文本进行编码
+	timeout=None, #超时异常触发事件
+)
+</code></pre>
+
+<p class="con">
+	<dfn>get_html</dfn>更加底层，如果仅仅是为了获取html网页内容，推荐使用<a href="#cutout">cutout</a>。<br>
+</p>
+
+
+
+
+
+<a name="url_save"></a>
+<h3 name="url_save">url_save 下载url文件</h3>
+<pre><code>from cutout import url_save
+#参数说明
+url_save(
+	url, #要获取的文件url地址
+	file=None, #保存的文件名
+	path=None, #下载路径，默认为当前执行路径
+	headers={}, #下载的请求头，用于伪装等
+	arrive=None #数据到达回调
+)
+</code></pre>
+
+<p class="con">
+	<dfn>url_save</dfn>更加底层，如果仅仅是为了下载文件，推荐使用<a href="#download">download</a>。<br>
+</p>
+
+
+
+
+<a name="remove_html_tags"></a>
+<h3 name="remove_html_tags">remove_html_tags 去除html标签</h3>
+<pre><code>from cutout import remove_html_tags
+#参数说明
+ remove_html_tags(
+	htmlstr, #html文本
+)
+</code></pre>
+
+
+
+<a name="url_size"></a>
+<h3 name="url_size">url_size 获取url文件大小</h3>
+<pre><code>from cutout import url_size
+#参数说明
+url_size(
+	url, #要获取大小的文件url地址
+)
+</code></pre>
+
+
+
+<a name="ungzip"></a>
+<h3 name="ungzip">ungzip gzip解压</h3>
+<pre><code>from cutout import ungzip
+#参数说明
+ ungzip(
+	data, #文本数据
+)
+</code></pre>
+
+<p class="con">
+	某些网站的内容会采用gzip压缩，需要调用此方法对其进行解压，以获取原文。
+</p>
+
+
+
+
+<!-- mysql 数据库 -->
+
+
+
+
+<a name="setconf"></a>
+<h3 name="setconf">setconf 配置</h3>
+<pre><code>from cutout.mysql import setconf
+#参数说明
+setconf(
+	cursor_type, # 游标风格，
+	#  默认   :  pymysql.cursors.Cursor
+	#  ss     :  pymysql.cursors.SSCursor
+	#  dict   :  pymysql.cursors.DictCursor
+	#  ssdict :  pymysql.cursors.SSDictCursor
+)
+##示例：
+setconf(cursor_type="dict") #表示查询的结果以字典形式返回
+</code></pre>
+
+
+
+
+
+<a name="connect"></a>
+<h3 name="connect">connect 连接数据库/获取连接</h3>
+<pre><code>from cutout.mysql import connect
+#参数说明
+connect(
+    dbconf=None,数据库配置
+)
+## 参数 dbconf 默认值：
+_dbConfig = {
+	'host':'localhost',
+	'user':'root',
+	'passwd':'',
+	'db':'',
+	'port':3306,
+	'charset': 'utf8',
+	'connect_timeout': 3600,
+	'autocommit': False #默认提交事务
+
+}
+##示例：
+connect(dbconf={"passwd":"????"}); #数据库密码为 "????"，其它项为默认值
+</code></pre>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -344,6 +568,8 @@ Github: <a href="https://github.com/yangjiePro/cutout">https://github.com/yangji
 邮箱:  yangjie@jojoin.com<br><br>
 QQ  : 446342398<br><br>
 </p>
+
+
 
 <br>
 <br>
