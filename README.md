@@ -32,7 +32,7 @@ Pre-requisites
 Installation
 ------------
 
-You can download **cutout** by [click here](https://github.com/yangjiePro/cutout/archive/master.zip), and use it in your code like this::
+You can download **cutout** by [click here](https://github.com/jojoin/cutout/archive/master.zip), and use it in your code like this::
 
 ```python
 from cutout import download, cutout
@@ -44,7 +44,7 @@ from cutout.util import sec2time
 Documentation
 -------------
 
-[中文API手册](http://yangjiepro.github.io/cutout/)
+[中文API手册](http://jojoin.github.io/cutout/)
 
 To get baidu music pc software download url, like this::
 
@@ -77,9 +77,9 @@ To create a ProgressBar for download, like this:：
     >>> download('http://qianqian.baidu.com/download/BaiduMusic-12345630.exe',showBar=bar)
     '[=============================>                    ]  59.23%  14.81%/s  1280.00KB/s  5120.00KB/8644.81KB  00:00:04'
 
-Read or run the [example.py](https://github.com/yangjiePro/cutout/blob/master/example.py) to get more example. 
+Read or run the [example.py](https://github.com/jojoin/cutout/blob/master/example.py) to get more example. 
 
-Download and use the browser to open the [document.zh.htm](https://github.com/yangjiePro/cutout/blob/master/document.zh.htm), A detailed understanding of all API. 
+Download and use the browser to open the [document.zh.htm](https://github.com/jojoin/cutout/blob/master/document.zh.htm), A detailed understanding of all API. 
 
 ```bash
 $ python3 cutout/test.py
@@ -89,10 +89,10 @@ Author
 ------
 
 **cutout** is developed and maintained by Yang Jie (yangjie@jojoin.com).
-It can be found here: http://github.com/yangjiePro/cutout
+It can be found here: http://github.com/jojoin/cutout
 
 Contact way:
 
-* Home : http://jojoin.com/user/1
+* Home : http://jojoin.com
 * Email: yangjie@jojoin.com
 * QQ   : 446342398
