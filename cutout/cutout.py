@@ -113,7 +113,7 @@ def cutout(
 		if pure: start += len_start;
 	if isinstance(end,str):
 		len_end = len(end)
-		end = data.find(end)
+		end = data.find(end, start)
 		if not pure: end += len_end;
 	#except:
 	#	return None
